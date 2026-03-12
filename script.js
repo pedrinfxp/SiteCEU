@@ -32,14 +32,22 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Smooth scroll for anchors
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    document.querySelectorAll('a[href*="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
+            const href = this.getAttribute('href');
+            const targetId = href.split('#')[1];
+            const target = document.getElementById(targetId);
+
+            // If we are on index.html and the link is to a section on index.html, smooth scroll
+            const isHomePage = window.location.pathname === '/' || window.location.pathname.endsWith('index.html') || window.location.pathname === '';
+            const isInternalLink = href.startsWith('#') || href.startsWith('index.html#');
+
+            if (target && (isInternalLink && isHomePage)) {
+                e.preventDefault();
                 // Close mobile menu if open
                 mobileMenuBtn.classList.remove('active');
                 navLinks.classList.remove('active');
+                document.body.classList.remove('menu-open');
 
                 window.scrollTo({
                     top: target.offsetTop - 80,
@@ -154,4 +162,35 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     `;
     document.head.appendChild(style);
+
+    // Lecture Filtering Logic
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const lectureCards = document.querySelectorAll('.lecture-card');
+
+    if (filterBtns.length > 0 && lectureCards.length > 0) {
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const year = btn.getAttribute('data-year');
+
+                // Update active state
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                // Filter cards
+                lectureCards.forEach(card => {
+                    const cardYear = card.getAttribute('data-year');
+                    if (year === 'all' || cardYear === year) {
+                        card.style.display = 'block';
+                        // Trigger small delay for animation if needed
+                        setTimeout(() => {
+                            card.classList.add('revealed');
+                        }, 50);
+                    } else {
+                        card.style.display = 'none';
+                        card.classList.remove('revealed');
+                    }
+                });
+            });
+        });
+    }
 });
