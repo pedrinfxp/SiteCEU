@@ -167,30 +167,35 @@ document.addEventListener('DOMContentLoaded', () => {
     const filterBtns = document.querySelectorAll('.filter-btn');
     const lectureCards = document.querySelectorAll('.lecture-card');
 
+    const filterYear = (year) => {
+        lectureCards.forEach(card => {
+            const cardYear = card.getAttribute('data-year');
+            if (year === 'all' || cardYear === year) {
+                card.style.display = 'block';
+                setTimeout(() => {
+                    card.classList.add('revealed');
+                }, 50);
+            } else {
+                card.style.display = 'none';
+                card.classList.remove('revealed');
+            }
+        });
+    };
+
     if (filterBtns.length > 0 && lectureCards.length > 0) {
         filterBtns.forEach(btn => {
             btn.addEventListener('click', () => {
                 const year = btn.getAttribute('data-year');
-
-                // Update active state
                 filterBtns.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-
-                // Filter cards
-                lectureCards.forEach(card => {
-                    const cardYear = card.getAttribute('data-year');
-                    if (year === 'all' || cardYear === year) {
-                        card.style.display = 'block';
-                        // Trigger small delay for animation if needed
-                        setTimeout(() => {
-                            card.classList.add('revealed');
-                        }, 50);
-                    } else {
-                        card.style.display = 'none';
-                        card.classList.remove('revealed');
-                    }
-                });
+                filterYear(year);
             });
         });
+
+        // Initial filter on load based on active button
+        const activeBtn = document.querySelector('.filter-btn.active');
+        if (activeBtn) {
+            filterYear(activeBtn.getAttribute('data-year'));
+        }
     }
 });
