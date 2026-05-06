@@ -683,6 +683,7 @@ nav.scrolled {
     left: 0;
     width: 100%;
     height: 100%;
+    background-image: url('assets/IMAGEMCAPA2.jpg');
     background-size: cover;
     background-position: center;
     z-index: -2;
@@ -2581,5 +2582,12 @@ footer {
     /* Fix Campaign Title breaking on mobile */
     .campaign-box h4 {
         font-size: 1.1rem !important;
+    }
+}
+
+/* Mobile Hero Background Update */
+@media (max-width: 768px) {
+    .hero-bg {
+        background-image: url('assets/IMAGEMCAPAMobile.png') !important;
     }
 }
